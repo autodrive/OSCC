@@ -96,7 +96,44 @@ impl Arbitrary for can_frame_s {
                    u8::arbitrary(g),
                    u8::arbitrary(g),
                    u8::arbitrary(g),
-                   u8::arbitrary(g)],
+                   u8::arbitrary(g)]
+        }
+    }
+}
+
+impl Arbitrary for oscc_report_chassis_state_2_data_s {
+    fn arbitrary<G: Gen>(g: &mut G) -> oscc_report_chassis_state_2_data_s {
+        oscc_report_chassis_state_2_data_s {
+            wheel_speed_front_left: i16::arbitrary(g),
+            wheel_speed_front_right: i16::arbitrary(g),
+            wheel_speed_rear_left: i16::arbitrary(g),
+            wheel_speed_rear_right: i16::arbitrary(g)
+        }
+    }
+}
+
+impl Arbitrary for oscc_report_chassis_state_2_s {
+    fn arbitrary<G: Gen>(g: &mut G) -> oscc_report_chassis_state_2_s {
+        oscc_report_chassis_state_2_s {
+            id: u32::arbitrary(g),
+            dlc: u8::arbitrary(g),
+            timestamp: u32::arbitrary(g),
+            data: oscc_report_chassis_state_2_data_s::arbitrary(g),
+        }
+    }
+}
+
+impl Arbitrary for pid_s {
+    fn arbitrary<G: Gen>(g: &mut G) -> pid_s {
+        pid_s {
+            windup_guard: f32::arbitrary(g),
+            proportional_gain: f32::arbitrary(g),
+            integral_gain: f32::arbitrary(g),
+            derivative_gain: f32::arbitrary(g),
+            prev_input: f32::arbitrary(g),
+            int_error: f32::arbitrary(g),
+            control: f32::arbitrary(g),
+            prev_steering_angle: f32::arbitrary(g)
         }
     }
 }
@@ -464,10 +501,12 @@ fn prop_check_rx_chassis_2(chassis_msg: oscc_report_chassis_state_2_s) -> TestRe
 
         check_for_incoming_message();
 
-        let wheel_speed_avg: f32 =
-            (chassis_msg.data.wheel_speed_front_left + chassis_msg.data.wheel_speed_front_right +
-             chassis_msg.data.wheel_speed_rear_left +
-             chassis_msg.data.wheel_speed_rear_right) as f32 / 4.0;
+        let wheel_speed_avg: f32 = (
+            chassis_msg.data.wheel_speed_front_left + 
+            chassis_msg.data.wheel_speed_front_right + 
+            chassis_msg.data.wheel_speed_rear_left + 
+            chassis_msg.data.wheel_speed_rear_right ) as f32
+            / 4.0;
 
         let vehicle_speed_kmh = wheel_speed_avg * 0.02 * 1.609;
 
