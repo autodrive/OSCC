@@ -37,6 +37,7 @@ fn main() {
         .file("../../../../../common/libs/dac/oscc_dac.cpp")
         .file("../../../../../common/libs/signal_smoothing/oscc_signal_smoothing.cpp")
         .cpp(true)
+        .compiler("/usr/bin/g++")
         .compile("libsteering_test.a");
 
     let out_dir = env::var("OUT_DIR").unwrap();

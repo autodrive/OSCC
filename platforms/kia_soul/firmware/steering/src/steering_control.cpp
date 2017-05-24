@@ -135,9 +135,31 @@ void update_steering( void )
 
         float control = g_pid.control;
 
+        // steering guvnah shit, see if we need to constrain based on vehicle speed.
+        float control_value_max;
+
+        float vehicle_speed_kmh = g_steering_control_state.vehicle_speed * 0.01;
+
+        if ( vehicle_speed_kmh >= 90 )
+        {
+            control_value_max = 250.0f;
+        }
+        else if ( vehicle_speed_kmh >= 60 )
+        {
+            control_value_max = 500.0f;
+        }
+        else if ( vehicle_speed_kmh >= 30 )
+        {
+            control_value_max = 1000.0f;
+        }
+        else
+        {
+            control_value_max = TORQUE_MAX_IN_NEWTON_METERS;
+        }
+
         control = constrain( control,
-                             TORQUE_MIN_IN_NEWTON_METERS,
-                             TORQUE_MAX_IN_NEWTON_METERS );
+                             -control_value_max,
+                             control_value_max );
 
         float torque_constraint = 1.0f;
 
