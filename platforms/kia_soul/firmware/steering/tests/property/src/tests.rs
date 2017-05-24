@@ -96,7 +96,44 @@ impl Arbitrary for can_frame_s {
                    u8::arbitrary(g),
                    u8::arbitrary(g),
                    u8::arbitrary(g),
-                   u8::arbitrary(g)],
+                   u8::arbitrary(g)]
+        }
+    }
+}
+
+impl Arbitrary for oscc_report_chassis_state_2_data_s {
+    fn arbitrary<G: Gen>(g: &mut G) -> oscc_report_chassis_state_2_data_s {
+        oscc_report_chassis_state_2_data_s {
+            wheel_speed_front_left: i16::arbitrary(g),
+            wheel_speed_front_right: i16::arbitrary(g),
+            wheel_speed_rear_left: i16::arbitrary(g),
+            wheel_speed_rear_right: i16::arbitrary(g)
+        }
+    }
+}
+
+impl Arbitrary for oscc_report_chassis_state_2_s {
+    fn arbitrary<G: Gen>(g: &mut G) -> oscc_report_chassis_state_2_s {
+        oscc_report_chassis_state_2_s {
+            id: u32::arbitrary(g),
+            dlc: u8::arbitrary(g),
+            timestamp: u32::arbitrary(g),
+            data: oscc_report_chassis_state_2_data_s::arbitrary(g),
+        }
+    }
+}
+
+impl Arbitrary for pid_s {
+    fn arbitrary<G: Gen>(g: &mut G) -> pid_s {
+        pid_s {
+            windup_guard: f32::arbitrary(g),
+            proportional_gain: f32::arbitrary(g),
+            integral_gain: f32::arbitrary(g),
+            derivative_gain: f32::arbitrary(g),
+            prev_input: f32::arbitrary(g),
+            int_error: f32::arbitrary(g),
+            control: f32::arbitrary(g),
+            prev_steering_angle: f32::arbitrary(g)
         }
     }
 }
@@ -347,12 +384,14 @@ fn prop_check_rx_chassis_2(chassis_msg: oscc_report_chassis_state_2_s) -> TestRe
 
         check_for_incoming_message();
 
-        let wheel_speed_avg: f32 =
-            (chassis_msg.data.wheel_speed_front_left + chassis_msg.data.wheel_speed_front_right +
-             chassis_msg.data.wheel_speed_rear_left +
-             chassis_msg.data.wheel_speed_rear_right) as f32 / 4.0;
+        let wheel_speed_avg: f32 = (
+            chassis_msg.data.wheel_speed_front_left + 
+            chassis_msg.data.wheel_speed_front_right + 
+            chassis_msg.data.wheel_speed_rear_left + 
+            chassis_msg.data.wheel_speed_rear_right ) as f32
+            / 4.0;
 
-        let vehicle_speed_kmh: i16 = ((wheel_speed_avg / 128.0) * 160.9) as i16;
+        let vehicle_speed_kmh: i16 =  ((wheel_speed_avg / 128.0) * 160.9 ) as i16;
 
         TestResult::from_bool(g_steering_control_state.vehicle_speed == vehicle_speed_kmh)
     }
@@ -391,39 +430,40 @@ fn prop_check_torque_constraints(vehicle_speed: i16,
 
         if vehicle_speed_kmh >= 90.0 {
             control_value_max = 250.0;
-        } else if vehicle_speed_kmh >= 60.0 {
+        }
+        else if vehicle_speed_kmh >= 60.0 {
             control_value_max = 500.0;
-        } else if vehicle_speed_kmh >= 30.0 {
+        }
+        else if vehicle_speed_kmh >= 30.0 {
             control_value_max = 1000.0;
-        } else {
+        }
+        else {
             control_value_max = TORQUE_MAX_IN_NEWTON_METERS;
         }
 
-        let min_low_for_kmh_step =
-            (STEPS_PER_VOLT *
-             ((SPOOF_LOW_SIGNAL_CALIBRATION_CURVE_SCALAR * -control_value_max) +
-              SPOOF_LOW_SIGNAL_CALIBRATION_CURVE_OFFSET)) as u16;
+        let min_low_for_kmh_step = (STEPS_PER_VOLT * 
+            ((SPOOF_LOW_SIGNAL_CALIBRATION_CURVE_SCALAR * -control_value_max)
+            + SPOOF_LOW_SIGNAL_CALIBRATION_CURVE_OFFSET)) as u16;
 
-        let max_low_for_kmh_step =
-            (STEPS_PER_VOLT *
-             ((SPOOF_LOW_SIGNAL_CALIBRATION_CURVE_SCALAR * control_value_max) +
-              SPOOF_LOW_SIGNAL_CALIBRATION_CURVE_OFFSET)) as u16;
+        let max_low_for_kmh_step = (STEPS_PER_VOLT * 
+            ((SPOOF_LOW_SIGNAL_CALIBRATION_CURVE_SCALAR * control_value_max)
+            + SPOOF_LOW_SIGNAL_CALIBRATION_CURVE_OFFSET)) as u16;
 
-        let min_high_for_kmh_step =
-            (STEPS_PER_VOLT *
-             ((SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_SCALAR * control_value_max) +
-              SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_OFFSET)) as u16;
-
+        let min_high_for_kmh_step = (STEPS_PER_VOLT * 
+            ((SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_SCALAR * control_value_max)
+            + SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_OFFSET)) as u16;
+        
         // need to reverse signs, since SPOOF_HIGH_CURVE_SCALAR is negative
-        let max_high_for_kmh_step =
-            (STEPS_PER_VOLT *
-             ((SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_SCALAR * -control_value_max) +
-              SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_OFFSET)) as u16;
+        let max_high_for_kmh_step = (STEPS_PER_VOLT * 
+            ((SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_SCALAR * -control_value_max)
+            + SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_OFFSET)) as u16;
 
-        TestResult::from_bool(g_mock_dac_output_a >= min_low_for_kmh_step &&
-                              g_mock_dac_output_a <= max_low_for_kmh_step &&
-                              g_mock_dac_output_b >= min_high_for_kmh_step &&
-                              g_mock_dac_output_b <= max_high_for_kmh_step)
+        TestResult::from_bool(
+            g_mock_dac_output_a >= min_low_for_kmh_step &&
+            g_mock_dac_output_a <= max_low_for_kmh_step &&
+            g_mock_dac_output_b >= min_high_for_kmh_step &&
+            g_mock_dac_output_b <= max_high_for_kmh_step
+        )
     }
 }
 
@@ -431,6 +471,5 @@ fn prop_check_torque_constraints(vehicle_speed: i16,
 fn check_torque_constraints() {
     QuickCheck::new()
         .tests(1000)
-        .gen(StdGen::new(rand::thread_rng(), i16::max_value() as usize))
         .quickcheck(prop_check_torque_constraints as fn(i16, i16, i16, i16, pid_s) -> TestResult)
 }
