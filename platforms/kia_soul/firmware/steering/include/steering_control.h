@@ -101,6 +101,8 @@
  */
 #define SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_OFFSET ( 2.5 )
 
+#define MPH_TO_KMH ( 1.609 )
+
 
 /**
  * @brief Torque values.
@@ -136,6 +138,8 @@ typedef struct
 
     int16_t commanded_steering_wheel_angle; /* Angle of steering wheel commanded
                                                by controller. */
+
+    int16_t vehicle_speed; /* Current vehicle speed as reported by the vehicle. */
 
     float commanded_steering_wheel_angle_rate; /* Rate of the steering wheel
                                                   angle commanded by controller. */
