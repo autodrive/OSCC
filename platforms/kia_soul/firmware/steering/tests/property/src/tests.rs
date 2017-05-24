@@ -96,7 +96,7 @@ impl Arbitrary for can_frame_s {
                    u8::arbitrary(g),
                    u8::arbitrary(g),
                    u8::arbitrary(g),
-                   u8::arbitrary(g)]
+                   u8::arbitrary(g)],
         }
     }
 }
@@ -107,7 +107,7 @@ impl Arbitrary for oscc_report_chassis_state_2_data_s {
             wheel_speed_front_left: i16::arbitrary(g),
             wheel_speed_front_right: i16::arbitrary(g),
             wheel_speed_rear_left: i16::arbitrary(g),
-            wheel_speed_rear_right: i16::arbitrary(g)
+            wheel_speed_rear_right: i16::arbitrary(g),
         }
     }
 }
@@ -133,7 +133,7 @@ impl Arbitrary for pid_s {
             prev_input: f32::arbitrary(g),
             int_error: f32::arbitrary(g),
             control: f32::arbitrary(g),
-            prev_steering_angle: f32::arbitrary(g)
+            prev_steering_angle: f32::arbitrary(g),
         }
     }
 }
