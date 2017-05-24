@@ -2,7 +2,7 @@
  * @file communications.cpp
  *
  */
-
+#include <stdio.h>
 
 #include "mcp_can.h"
 #include "oscc_can.h"
@@ -139,6 +139,29 @@ static void process_chassis_state_1_report(
     }
 }
 
+static void process_chassis_state_2_report(
+    const uint8_t * const data )
+{
+    if ( data != NULL )
+    {
+        const oscc_report_chassis_state_2_data_s * const chassis_state_2_data =
+                (oscc_report_chassis_state_2_data_s *) data;
+
+        float wheel_speed_avg = ( 
+            chassis_state_2_data->wheel_speed_front_left + 
+            chassis_state_2_data->wheel_speed_front_right + 
+            chassis_state_2_data->wheel_speed_rear_left + 
+            chassis_state_2_data->wheel_speed_rear_right )
+            / 4.0;
+
+        // convert from 1/128 mph (Kia OBD units) to 0.01 km/h and store as vehicle speed
+        g_steering_control_state.vehicle_speed = 
+            ( wheel_speed_avg / 128 ) 
+            * MPH_TO_KMH 
+            * 100;
+    }
+}
+
 
 static void process_rx_frame(
     can_frame_s * const frame )
@@ -152,6 +175,10 @@ static void process_rx_frame(
         else if ( frame->id == OSCC_REPORT_CHASSIS_STATE_1_CAN_ID )
         {
             process_chassis_state_1_report( frame->data );
+        }
+        else if ( frame->id == OSCC_REPORT_CHASSIS_STATE_2_CAN_ID )
+        {
+            process_chassis_state_2_report( frame->data );
         }
     }
 }
