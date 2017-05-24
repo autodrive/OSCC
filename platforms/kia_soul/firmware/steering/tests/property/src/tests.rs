@@ -96,7 +96,7 @@ impl Arbitrary for can_frame_s {
                    u8::arbitrary(g),
                    u8::arbitrary(g),
                    u8::arbitrary(g),
-                   u8::arbitrary(g)]
+                   u8::arbitrary(g)],
         }
     }
 }
@@ -107,7 +107,7 @@ impl Arbitrary for oscc_report_chassis_state_2_data_s {
             wheel_speed_front_left: i16::arbitrary(g),
             wheel_speed_front_right: i16::arbitrary(g),
             wheel_speed_rear_left: i16::arbitrary(g),
-            wheel_speed_rear_right: i16::arbitrary(g)
+            wheel_speed_rear_right: i16::arbitrary(g),
         }
     }
 }
@@ -133,7 +133,7 @@ impl Arbitrary for pid_s {
             prev_input: f32::arbitrary(g),
             int_error: f32::arbitrary(g),
             control: f32::arbitrary(g),
-            prev_steering_angle: f32::arbitrary(g)
+            prev_steering_angle: f32::arbitrary(g),
         }
     }
 }
@@ -421,14 +421,12 @@ fn prop_check_rx_chassis_2(chassis_msg: oscc_report_chassis_state_2_s) -> TestRe
 
         check_for_incoming_message();
 
-        let wheel_speed_avg: f32 = (
-            chassis_msg.data.wheel_speed_front_left + 
-            chassis_msg.data.wheel_speed_front_right + 
-            chassis_msg.data.wheel_speed_rear_left + 
-            chassis_msg.data.wheel_speed_rear_right ) as f32
-            / 4.0;
+        let wheel_speed_avg: f32 =
+            (chassis_msg.data.wheel_speed_front_left + chassis_msg.data.wheel_speed_front_right +
+             chassis_msg.data.wheel_speed_rear_left +
+             chassis_msg.data.wheel_speed_rear_right) as f32 / 4.0;
 
-        let vehicle_speed_kmh: i16 =  ((wheel_speed_avg / 128.0) * 160.9 ) as i16;
+        let vehicle_speed_kmh: i16 = ((wheel_speed_avg / 128.0) * 160.9) as i16;
 
         TestResult::from_bool(g_steering_control_state.vehicle_speed == vehicle_speed_kmh)
     }
@@ -498,7 +496,6 @@ fn prop_check_torque_constraints(vehicle_speed: f32,
                               g_mock_dac_output_a <= max_low_for_kmh_step &&
                               g_mock_dac_output_b >= min_high_for_kmh_step &&
                               g_mock_dac_output_b <= max_high_for_kmh_step)
-
     }
 }
 
