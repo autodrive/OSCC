@@ -2,3 +2,4 @@
 #include "communications.h"
 #include "oscc_can.h"
 #include "steering_can_protocol.h"
+#include "chassis_state_can_protocol.h"
