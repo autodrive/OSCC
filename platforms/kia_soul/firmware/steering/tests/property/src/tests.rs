@@ -469,11 +469,7 @@ fn prop_check_rx_chassis_2(chassis_msg: oscc_report_chassis_state_2_s) -> TestRe
              chassis_msg.data.wheel_speed_rear_left +
              chassis_msg.data.wheel_speed_rear_right) as f32 / 4.0;
 
-<<<<<<< 011b4d626c1fd0ad2c8271d90dedb420df18e344
         let vehicle_speed_kmh = wheel_speed_avg * 0.02 * 1.609;
-=======
-        let vehicle_speed_kmh: i16 = ((wheel_speed_avg / 128.0) * 160.9) as i16;
->>>>>>> Update for style guide
 
         TestResult::from_bool(g_steering_control_state.vehicle_speed as i16 ==
                               vehicle_speed_kmh as i16)
