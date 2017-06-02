@@ -1,11 +1,11 @@
 WHEN("^a Chassis State 1 report is received with steering wheel angle (.*)$")
 {
-    REGEX_PARAM(int, raw_angle);
+    REGEX_PARAM(int, angle);
 
     oscc_report_chassis_state_1_data_s * chassis_state_1_data =
         (oscc_report_chassis_state_1_data_s *) g_mock_mcp_can_read_msg_buf_buf;
 
-    chassis_state_1_data->steering_wheel_angle = raw_angle;
+    chassis_state_1_data->steering_wheel_angle = angle;
     chassis_state_1_data->flags = OSCC_REPORT_CHASSIS_STATE_1_FLAGS_BIT_STEER_WHEEL_ANGLE_VALID;
 
     g_mock_mcp_can_read_msg_buf_id = OSCC_REPORT_CHASSIS_STATE_1_CAN_ID;
@@ -15,12 +15,12 @@ WHEN("^a Chassis State 1 report is received with steering wheel angle (.*)$")
 }
 
 
-THEN("^the control state's current_steering_wheel_angle field should be (.*)$")
+THEN("^the control state's current_steering_wheel_angle field should also be (.*)$")
 {
-    REGEX_PARAM(float, scaled_angle);
+    REGEX_PARAM(float, angle);
 
     significant_figures_for_assert_double_are(6);
     assert_that_double(
         g_steering_control_state.current_steering_wheel_angle,
-        is_equal_to_double(scaled_angle));
+        is_equal_to_double(angle));
 }
