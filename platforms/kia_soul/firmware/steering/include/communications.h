@@ -10,17 +10,10 @@
 
 
 /*
- * @brief Scalar value to convert angle reported by OBD to human-readable value.
+ * @brief Scalar value to convert angle reported by OBD to a floating-point value.
  *
  */
-#define RAW_ANGLE_SCALAR ( 0.0076294 )
-
-/*
- * @brief Scalar value to convert wheel angle (-40 to 40 degrees) to steering
- *        wheel angle (-470 to 470) degrees.
- *
- */
-#define WHEEL_ANGLE_TO_STEERING_WHEEL_ANGLE_SCALAR ( 11.7 )
+#define ANGLE_SCALAR ( 0.01 )
 
 
 /*
