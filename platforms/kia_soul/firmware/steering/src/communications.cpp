@@ -154,11 +154,9 @@ static void process_chassis_state_2_report(
             chassis_state_2_data->wheel_speed_rear_right )
             / 4.0;
 
-        // convert from 1/128 mph (Kia OBD units) to 0.01 km/h and store as vehicle speed
+        // convert from 1/50 mph (Kia OBD units) to kmh and store as vehicle speed
         g_steering_control_state.vehicle_speed = 
-            ( wheel_speed_avg / 128 ) 
-            * MPH_TO_KMH 
-            * 100;
+            wheel_speed_avg * RAW_WHEEL_SPEED_SCALAR * MPH_TO_KMH;
     }
 }
 
