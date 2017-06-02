@@ -7,8 +7,8 @@ Feature: Receiving reports
 
   Scenario Outline: Chassis State 1 report sent from CAN gateway.
     When a Chassis State 1 report is received with steering wheel angle <angle>
-
-    Then the control state's current_steering_wheel_angle field should be <angle>
+    Then the control state's current_steering_wheel_angle field should be <angle> 
+    scaled down by a factor of 10
 
     Examples:
         | angle     |
