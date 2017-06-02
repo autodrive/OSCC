@@ -24,6 +24,13 @@
 
 
 /*
+ * @brief Scalar value to convert wheel speed reported by OBD to normal mph value.
+ *
+ */
+#define RAW_WHEEL_SPEED_SCALAR ( 0.02 )
+
+
+/*
  * @brief Amount of time after controller command that is considered a
  *        timeout. [milliseconds]
  *
