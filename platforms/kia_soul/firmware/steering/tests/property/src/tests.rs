@@ -405,9 +405,9 @@ fn check_rx_chassis_2() {
 /// the steering module should output lower values of torque
 /// when the vehicle is operating at higher speeds
 fn prop_check_torque_constraints(vehicle_speed: i16,
-                                 current_steering_angle: i16,
-                                 previous_steering_angle: i16,
-                                 commanded_steering_angle: i16,
+                                 current_steering_angle: f32,
+                                 previous_steering_angle: f32,
+                                 commanded_steering_angle: f32,
                                  pid: pid_s)
                                  -> TestResult {
     unsafe {
@@ -469,5 +469,5 @@ fn check_torque_constraints() {
     QuickCheck::new()
         .tests(1000)
         .gen(StdGen::new(rand::thread_rng(), i16::max_value() as usize))
-        .quickcheck(prop_check_torque_constraints as fn(i16, i16, i16, i16, pid_s) -> TestResult)
+        .quickcheck(prop_check_torque_constraints as fn(i16, f32, f32, f32, pid_s) -> TestResult)
 }
