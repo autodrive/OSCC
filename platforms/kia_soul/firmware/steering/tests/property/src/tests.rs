@@ -541,5 +541,5 @@ fn check_torque_constraints() {
     QuickCheck::new()
         .tests(1000)
         .gen(StdGen::new(rand::thread_rng(), i16::max_value() as usize))
-        .quickcheck(prop_check_torque_constraints as fn(i16, i16, i16, i16, pid_s) -> TestResult)
+        .quickcheck(prop_check_torque_constraints as fn(i16, f32, f32, f32, pid_s) -> TestResult)
 }
