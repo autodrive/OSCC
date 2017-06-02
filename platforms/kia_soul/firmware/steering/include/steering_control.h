@@ -120,13 +120,10 @@
  */
 #define SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_OFFSET ( 2.5 )
 
-<<<<<<< e83298cdf0ffdb9b07a0eb05ccfeec2ba9cf300d
 /*
  * @brief Conversion factor from OBD units in MPH to SI units of KMH
  *
  */
-=======
->>>>>>> Add first pass steering governer to refactored code + test
 #define MPH_TO_KMH ( 1.609 )
 
 
