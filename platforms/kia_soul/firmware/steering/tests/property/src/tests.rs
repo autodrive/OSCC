@@ -352,9 +352,9 @@ fn prop_check_rx_chassis_2(chassis_msg: oscc_report_chassis_state_2_s) -> TestRe
              chassis_msg.data.wheel_speed_rear_left +
              chassis_msg.data.wheel_speed_rear_right) as f32 / 4.0;
 
-        let vehicle_speed_kmh: i16 = ((wheel_speed_avg / 128.0) * 160.9) as i16;
+        let vehicle_speed_kmh = wheel_speed_avg * 0.02 * 1.609;
 
-        TestResult::from_bool(g_steering_control_state.vehicle_speed == vehicle_speed_kmh)
+        TestResult::from_bool(g_steering_control_state.vehicle_speed as i16 == vehicle_speed_kmh as i16)
     }
 }
 
@@ -367,7 +367,7 @@ fn check_rx_chassis_2() {
 
 /// the steering module should output lower values of torque
 /// when the vehicle is operating at higher speeds
-fn prop_check_torque_constraints(vehicle_speed: i16,
+fn prop_check_torque_constraints(vehicle_speed: f32,
                                  current_steering_angle: f32,
                                  previous_steering_angle: f32,
                                  commanded_steering_angle: f32,
@@ -387,13 +387,11 @@ fn prop_check_torque_constraints(vehicle_speed: i16,
 
         let control_value_max: f32;
 
-        let vehicle_speed_kmh: f32 = vehicle_speed as f32 * 0.01;
-
-        if vehicle_speed_kmh >= 90.0 {
+        if vehicle_speed >= 90.0 {
             control_value_max = 250.0;
-        } else if vehicle_speed_kmh >= 60.0 {
+        } else if vehicle_speed >= 60.0 {
             control_value_max = 500.0;
-        } else if vehicle_speed_kmh >= 30.0 {
+        } else if vehicle_speed >= 30.0 {
             control_value_max = 1000.0;
         } else {
             control_value_max = TORQUE_MAX_IN_NEWTON_METERS;
@@ -432,5 +430,5 @@ fn check_torque_constraints() {
     QuickCheck::new()
         .tests(1000)
         .gen(StdGen::new(rand::thread_rng(), i16::max_value() as usize))
-        .quickcheck(prop_check_torque_constraints as fn(i16, f32, f32, f32, pid_s) -> TestResult)
+        .quickcheck(prop_check_torque_constraints as fn(f32, f32, f32, f32, pid_s) -> TestResult)
 }
