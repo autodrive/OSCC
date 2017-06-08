@@ -13,7 +13,7 @@
  * @brief Scalar value to convert angle reported by OBD to a floating-point value.
  *
  */
-#define ANGLE_SCALAR ( 0.01 )
+#define ANGLE_SCALAR ( 0.1 )
 
 
 /*
