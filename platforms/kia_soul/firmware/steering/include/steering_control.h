@@ -120,6 +120,10 @@
  */
 #define SPOOF_HIGH_SIGNAL_CALIBRATION_CURVE_OFFSET ( 2.5 )
 
+/*
+ * @brief Conversion factor from OBD units in MPH to SI units of KMH
+ *
+ */
 #define MPH_TO_KMH ( 1.609 )
 
 
@@ -163,7 +167,7 @@ typedef struct
     float commanded_steering_wheel_angle; /* Angle of steering wheel commanded
                                              by controller. */
 
-    float vehicle_speed; /* Current vehicle speed as reported by the vehicle. */
+    float vehicle_speed; /* Current vehicle speed in kmh as reported by the vehicle. */
 
     float commanded_steering_wheel_angle_rate; /* Rate of the steering wheel
                                                   angle commanded by controller. */

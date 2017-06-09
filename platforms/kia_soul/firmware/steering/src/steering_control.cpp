@@ -135,28 +135,26 @@ void update_steering( void )
 
         float control = g_pid.control;
 
-        float control_value_max;
-
-        if ( g_steering_control_state.vehicle_speed >= 90 )
-        {
-            control_value_max = 250.0f;
-        }
-        else if ( g_steering_control_state.vehicle_speed >= 60 )
-        {
-            control_value_max = 500.0f;
-        }
-        else if ( g_steering_control_state.vehicle_speed >= 30 )
-        {
-            control_value_max = 1000.0f;
-        }
-        else
-        {
-            control_value_max = TORQUE_MAX_IN_NEWTON_METERS;
-        }
-
         control = constrain( control,
-                             -control_value_max,
-                             control_value_max );
+                             TORQUE_MIN_IN_NEWTON_METERS,
+                             TORQUE_MAX_IN_NEWTON_METERS );
+
+        float torque_constraint = 1.0f;
+
+        if ( abs( g_steering_control_state.vehicle_speed ) >= 90 )
+        {
+            torque_constraint = 0.25f;
+        }
+        else if ( abs( g_steering_control_state.vehicle_speed ) >= 60 )
+        {
+            torque_constraint = 0.5f;
+        }
+        else if ( abs( g_steering_control_state.vehicle_speed ) >= 30 )
+        {
+            torque_constraint = 0.75f;
+        }
+
+        control *= torque_constraint;
 
         steering_torque_s torque_spoof;
 
