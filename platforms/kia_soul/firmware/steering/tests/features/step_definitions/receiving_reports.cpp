@@ -15,12 +15,12 @@ WHEN("^a Chassis State 1 report is received with steering wheel angle (.*)$")
 }
 
 
-THEN("^the control state's current_steering_wheel_angle field should also be (.*)$")
+THEN("^the control state's current_steering_wheel_angle field should be (.*) scaled down by a factor of 10$")
 {
     REGEX_PARAM(float, angle);
 
     significant_figures_for_assert_double_are(6);
     assert_that_double(
         g_steering_control_state.current_steering_wheel_angle,
-        is_equal_to_double(angle));
+        is_equal_to_double(angle * 0.1));
 }
