@@ -212,42 +212,6 @@ impl Arbitrary for pid_s {
     }
 }
 
-impl Arbitrary for oscc_report_chassis_state_2_data_s {
-    fn arbitrary<G: Gen>(g: &mut G) -> oscc_report_chassis_state_2_data_s {
-        oscc_report_chassis_state_2_data_s {
-            wheel_speed_front_left: i16::arbitrary(g),
-            wheel_speed_front_right: i16::arbitrary(g),
-            wheel_speed_rear_left: i16::arbitrary(g),
-            wheel_speed_rear_right: i16::arbitrary(g),
-        }
-    }
-}
-
-impl Arbitrary for oscc_report_chassis_state_2_s {
-    fn arbitrary<G: Gen>(g: &mut G) -> oscc_report_chassis_state_2_s {
-        oscc_report_chassis_state_2_s {
-            id: u32::arbitrary(g),
-            dlc: u8::arbitrary(g),
-            timestamp: u32::arbitrary(g),
-            data: oscc_report_chassis_state_2_data_s::arbitrary(g),
-        }
-    }
-}
-
-impl Arbitrary for pid_s {
-    fn arbitrary<G: Gen>(g: &mut G) -> pid_s {
-        pid_s {
-            windup_guard: f32::arbitrary(g),
-            proportional_gain: f32::arbitrary(g),
-            integral_gain: f32::arbitrary(g),
-            derivative_gain: f32::arbitrary(g),
-            prev_input: f32::arbitrary(g),
-            int_error: f32::arbitrary(g),
-            control: f32::arbitrary(g),
-            prev_steering_angle: f32::arbitrary(g),
-        }
-    }
-}
 
 impl Arbitrary for oscc_report_chassis_state_2_data_s {
     fn arbitrary<G: Gen>(g: &mut G) -> oscc_report_chassis_state_2_data_s {
@@ -655,6 +619,122 @@ fn check_torque_constraint() {
         .tests(1000)
         .gen(StdGen::new(rand::thread_rng(), u16::max_value() as usize))
         .quickcheck(prop_check_torque_constraint as fn(f32, f32, f32, f32, pid_s) -> TestResult)
+}
+
+
+/// For the same input and setpoint, control should be smaller
+/// the faster the vehicle is moving
+fn prop_control_decrease_for_speed_increase(current_steering_angle: f32,
+                                                  previous_steering_angle: f32,
+                                                  commanded_steering_angle: f32,
+                                                  pid: pid_s)
+                                                  -> TestResult {
+    unsafe {
+        g_steering_control_state.enabled = true;
+        g_steering_control_state.vehicle_speed = 10.0;
+
+        g_steering_control_state.current_steering_wheel_angle = current_steering_angle;
+        g_steering_control_state.previous_steering_wheel_angle = previous_steering_angle;
+        g_steering_control_state.commanded_steering_wheel_angle = commanded_steering_angle;
+
+        g_pid = pid;
+
+        pid_zeroize( &mut g_pid, PID_WINDUP_GUARD as f32 );
+
+        g_pid.proportional_gain = PID_PROPORTIONAL_GAIN;
+        g_pid.integral_gain     = PID_INTEGRAL_GAIN;
+        g_pid.derivative_gain   = PID_DERIVATIVE_GAIN;
+
+        update_steering();
+
+        let control_low_kmh = g_pid.control;
+        
+        g_steering_control_state.vehicle_speed = 65.0;
+
+        g_steering_control_state.current_steering_wheel_angle = current_steering_angle;
+        g_steering_control_state.previous_steering_wheel_angle = previous_steering_angle;
+        g_steering_control_state.commanded_steering_wheel_angle = commanded_steering_angle;
+
+        g_pid = pid;
+
+        pid_zeroize( &mut g_pid, PID_WINDUP_GUARD as f32 );
+
+        g_pid.proportional_gain = PID_PROPORTIONAL_GAIN;
+        g_pid.integral_gain     = PID_INTEGRAL_GAIN;
+        g_pid.derivative_gain   = PID_DERIVATIVE_GAIN;
+
+        update_steering();
+
+        let control_high_kmh = g_pid.control;
+
+        TestResult::from_bool(control_low_kmh.abs() >= control_high_kmh.abs())
+    }
+}
+
+#[test]
+fn check_control_decrease_for_speed_increase() {
+    QuickCheck::new()
+        .tests(1000)
+        .gen(StdGen::new(rand::thread_rng(), u16::max_value() as usize))
+        .quickcheck(prop_control_decrease_for_speed_increase as fn(f32, f32, f32, pid_s) -> TestResult)
+}
+
+
+/// For the same inputs and setpoints, torque should have smaller range
+/// based on vehicle speed.
+fn prop_check_torque_limiting(current_steering_angle: f32,
+                              previous_steering_angle: f32,
+                              commanded_steering_angle: f32,
+                              pid: pid_s)
+                              -> TestResult {
+    unsafe {
+        g_steering_control_state.enabled = true;
+        g_steering_control_state.vehicle_speed = 10.0;
+
+        g_steering_control_state.current_steering_wheel_angle = current_steering_angle;
+        g_steering_control_state.previous_steering_wheel_angle = previous_steering_angle;
+        g_steering_control_state.commanded_steering_wheel_angle = commanded_steering_angle;
+
+        g_pid = pid;
+
+        pid_zeroize( &mut g_pid, PID_WINDUP_GUARD as f32 );
+
+        g_pid.proportional_gain = PID_PROPORTIONAL_GAIN;
+        g_pid.integral_gain     = PID_INTEGRAL_GAIN;
+        g_pid.derivative_gain   = PID_DERIVATIVE_GAIN;
+
+        update_steering();
+
+        let spoofed_torque_output_range_low_kmh = (g_mock_dac_output_b as i32 - g_mock_dac_output_a as i32).abs();
+
+        g_steering_control_state.vehicle_speed = 65.0;
+
+        g_steering_control_state.current_steering_wheel_angle = current_steering_angle;
+        g_steering_control_state.previous_steering_wheel_angle = previous_steering_angle;
+        g_steering_control_state.commanded_steering_wheel_angle = commanded_steering_angle;
+
+        g_pid = pid;
+
+        pid_zeroize( &mut g_pid, PID_WINDUP_GUARD as f32 );
+
+        g_pid.proportional_gain = PID_PROPORTIONAL_GAIN;
+        g_pid.integral_gain     = PID_INTEGRAL_GAIN;
+        g_pid.derivative_gain   = PID_DERIVATIVE_GAIN;
+
+        update_steering();
+
+        let spoofed_torque_output_range_high_kmh = (g_mock_dac_output_b as i32 - g_mock_dac_output_a as i32).abs();
+
+        TestResult::from_bool(spoofed_torque_output_range_low_kmh >= spoofed_torque_output_range_high_kmh)
+    }
+}
+
+#[test]
+#[ignore]
+fn check_torque_limiting() {
+    QuickCheck::new()
+        .tests(1)
+        .quickcheck(prop_check_torque_limiting as fn(f32, f32, f32, pid_s) -> TestResult)
 }
 
 
