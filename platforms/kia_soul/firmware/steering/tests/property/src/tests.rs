@@ -375,12 +375,12 @@ fn check_rx_chassis_2() {
 
 /// the steering module should output lower values of torque
 /// when the vehicle is operating at higher speeds
-fn prop_check_torque_constraint(vehicle_speed: f32,
-                                current_steering_angle: f32,
-                                previous_steering_angle: f32,
-                                commanded_steering_angle: f32,
-                                pid: pid_s)
-                                -> TestResult {
+fn prop_check_torque_constraints(vehicle_speed: f32,
+                                 current_steering_angle: f32,
+                                 previous_steering_angle: f32,
+                                 commanded_steering_angle: f32,
+                                 pid: pid_s)
+                                 -> TestResult {
     unsafe {
         g_steering_control_state.enabled = true;
         g_steering_control_state.vehicle_speed = vehicle_speed;
