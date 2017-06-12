@@ -130,7 +130,7 @@ static void process_chassis_state_1_report(
             & OSCC_REPORT_CHASSIS_STATE_1_FLAGS_BIT_STEER_WHEEL_ANGLE_VALID )
         {
             g_steering_control_state.current_steering_wheel_angle =
-                chassis_state_1_data->steering_wheel_angle * ANGLE_SCALAR;
+                chassis_state_1_data->steering_wheel_angle;
 
             g_chassis_state_1_report_last_rx_timestamp = GET_TIMESTAMP_MS( );
         }
