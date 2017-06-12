@@ -10,13 +10,6 @@
 
 
 /*
- * @brief Scalar value to convert angle reported by OBD to a floating-point value.
- *
- */
-#define ANGLE_SCALAR ( 0.1 )
-
-
-/*
  * @brief Amount of time after controller command that is considered a
  *        timeout. [milliseconds]
  *
