@@ -22,5 +22,5 @@ THEN("^the control state's current_steering_wheel_angle field should also be (.*
     significant_figures_for_assert_double_are(6);
     assert_that_double(
         g_steering_control_state.current_steering_wheel_angle,
-        is_equal_to_double(angle * 0.1));
+        is_equal_to_double(angle));
 }
