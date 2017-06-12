@@ -151,11 +151,7 @@ typedef struct
     float commanded_steering_wheel_angle; /* Angle of steering wheel commanded
                                              by controller. */
 
-<<<<<<< HEAD
     float vehicle_speed; /* Current vehicle speed in kmh as reported by the vehicle. */
-=======
-    float vehicle_speed; /* Current vehicle speed as reported by the vehicle. */
->>>>>>> b7dea234da46fc45fbb497ccce511c99aa984bd8
 
     float commanded_steering_wheel_angle_rate; /* Rate of the steering wheel
                                                   angle commanded by controller. */
