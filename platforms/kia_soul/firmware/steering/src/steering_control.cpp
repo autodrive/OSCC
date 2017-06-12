@@ -156,23 +156,6 @@ void update_steering( void )
 
         control *= torque_constraint;
 
-        float torque_constraint = 1.0f;
-
-        if ( abs( g_steering_control_state.vehicle_speed ) >= 90 )
-        {
-            torque_constraint = 0.25f;
-        }
-        else if ( abs( g_steering_control_state.vehicle_speed ) >= 60 )
-        {
-            torque_constraint = 0.5f;
-        }
-        else if ( abs( g_steering_control_state.vehicle_speed ) >= 30 )
-        {
-            torque_constraint = 0.75f;
-        }
-
-        control *= torque_constraint;
-
         steering_torque_s torque_spoof;
 
         calculate_torque_spoof( control, &torque_spoof );
