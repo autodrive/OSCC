@@ -549,8 +549,4 @@ fn check_torque_limiting() {
     QuickCheck::new()
         .tests(1)
         .quickcheck(prop_check_torque_limiting as fn(f32, f32, f32, pid_s) -> TestResult)
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 22cca57166710a5da1ea34d8ff4012f49073ffc7
