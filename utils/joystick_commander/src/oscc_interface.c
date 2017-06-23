@@ -473,8 +473,8 @@ int oscc_interface_disable_brakes( )
     {
         oscc->brake_cmd.enabled = 0;
 
-        printf( "brake: %d %d\n", oscc->brake_cmd.enabled,
-                oscc->brake_cmd.pedal_command );
+        // printf( "brake: %d %d\n", oscc->brake_cmd.enabled,
+        //         oscc->brake_cmd.pedal_command );
 
         return_code = oscc_interface_command_brakes( 0 );
     }
@@ -501,8 +501,8 @@ int oscc_interface_disable_throttle( )
     {
         oscc->throttle_cmd.enabled = 0;
 
-        printf( "throttle: %d %d\n", oscc->throttle_cmd.enabled,
-                oscc->throttle_cmd.commanded_accelerator_position );
+        // printf( "throttle: %d %d\n", oscc->throttle_cmd.enabled,
+        //         oscc->throttle_cmd.commanded_accelerator_position );
 
         return_code = oscc_interface_command_throttle( 0 );
     }
@@ -529,10 +529,10 @@ int oscc_interface_disable_steering( )
     {
         oscc->steering_cmd.enabled = 0;
 
-        printf( "steering: %d %d %d\n",
-                oscc->steering_cmd.enabled,
-                oscc->steering_cmd.commanded_steering_wheel_angle,
-                oscc->steering_cmd.commanded_steering_wheel_angle_rate );
+        // printf( "steering: %d %d %d\n",
+        //         oscc->steering_cmd.enabled,
+        //         oscc->steering_cmd.commanded_steering_wheel_angle,
+        //         oscc->steering_cmd.commanded_steering_wheel_angle_rate );
 
         return_code = oscc_interface_command_steering( 0, 0 );
     }
