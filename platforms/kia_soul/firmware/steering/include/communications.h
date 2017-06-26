@@ -22,6 +22,13 @@
  */
 #define WHEEL_ANGLE_TO_STEERING_WHEEL_ANGLE_SCALAR ( 11.7 )
 
+/*
+ * @brief Scalar value to standardize CAN int steering wheel angles 
+ *        (1/10th degrees) to degrees.
+ *
+ */
+#define CAN_ANGLE_TO_DEGREES_SCALAR ( 0.1 )
+
 
 /*
  * @brief Amount of time after controller command that is considered a

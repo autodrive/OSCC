@@ -70,19 +70,21 @@
 /**
  * @brief Steering wheel angle values [radians]
  *
- * Negative value means turning to the right
+ * Negative value means turning to the right.
+ * Allows for steering values between (-8.739, 8.729) radians corresponding to ~ 
+ * (-500, 500) degrees.
  *
  */
-#define MIN_STEERING_WHEEL_ANGLE (-M_PI * 2.0)
-#define MAX_STEERING_WHEEL_ANGLE (M_PI * 2.0)
+#define MIN_STEERING_WHEEL_ANGLE (-M_PI * 2.78)
+#define MAX_STEERING_WHEEL_ANGLE (M_PI * 2.78)
 
 
 /**
  * @brief Steering command angles [int16_t]
  *
  */
-#define STEERING_COMMAND_ANGLE_MIN (-4700)
-#define STEERING_COMMAND_ANGLE_MAX (4700)
+#define STEERING_COMMAND_ANGLE_MIN (-5200)
+#define STEERING_COMMAND_ANGLE_MAX (5200)
 
 
 /**
