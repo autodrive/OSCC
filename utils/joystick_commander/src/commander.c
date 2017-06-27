@@ -32,7 +32,7 @@
  */
 #define JOYSTICK_AXIS_THROTTLE (SDL_CONTROLLER_AXIS_TRIGGERRIGHT) // doesn't work yet
 #define JOYSTICK_AXIS_BRAKE (SDL_CONTROLLER_AXIS_TRIGGERLEFT)
-#define JOYSTICK_AXIS_STEER (SDL_CONTROLLER_AXIS_RIGHTX)
+#define JOYSTICK_AXIS_STEER (SDL_CONTROLLER_AXIS_LEFTX)
 
 
 /**
@@ -71,8 +71,8 @@
  * @brief Steering wheel angle values [radians]
  *
  * Negative value means turning to the right.
- * Allows for steering values between (-8.739, 8.729) radians corresponding to ~ 
- * (-500, 500) degrees.
+ * Allows for steering values between (-8.739, 8.729) radians corresponding to
+ * ~(-500, 500) degrees.
  *
  */
 #define MIN_STEERING_WHEEL_ANGLE (-M_PI * 2.78)
