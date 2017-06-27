@@ -15,7 +15,7 @@ WHEN("^a Chassis State 1 report is received with steering wheel angle (.*)$")
 }
 
 
-THEN("^the control state's current_steering_wheel_angle field should be (.*) scaled down by a factor of 10$")
+THEN("^the control state's current_steering_wheel_angle field should be (.*) in degrees$")
 {
     REGEX_PARAM(float, angle);
 
