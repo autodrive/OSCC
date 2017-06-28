@@ -137,9 +137,9 @@ fn prop_no_invalid_targets(mut command_steering_msg: oscc_command_steering_s) ->
 
         check_for_incoming_message();
 
-        TestResult::from_bool(g_steering_control_state.commanded_steering_wheel_angle ==
+        TestResult::from_bool(g_steering_control_state.commanded_steering_wheel_angle.round() ==
                               (command_steering_msg.data.commanded_steering_wheel_angle as
-                               f32 / 9.0) &&
+                               f32 * 0.1).round() &&
                               g_steering_control_state.commanded_steering_wheel_angle_rate ==
                               (command_steering_msg
                                    .data
