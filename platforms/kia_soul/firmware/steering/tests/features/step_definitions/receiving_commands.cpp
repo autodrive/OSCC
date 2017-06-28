@@ -74,7 +74,7 @@ THEN("^the steering wheel angle command should be parsed$")
     significant_figures_for_assert_double_are(4);
     assert_that_double(
         g_steering_control_state.commanded_steering_wheel_angle,
-        is_equal_to_double(steering_command_data->commanded_steering_wheel_angle/9.0));
+        is_equal_to_double(steering_command_data->commanded_steering_wheel_angle * 0.1));
 }
 
 
