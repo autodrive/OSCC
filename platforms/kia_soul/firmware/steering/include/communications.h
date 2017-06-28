@@ -25,6 +25,14 @@
 #define CHASSIS_STATE_1_REPORT_TIMEOUT_IN_MSEC ( 500 )
 
 
+/*
+ * @brief Amount of time after controller command that is considered a
+ *        timeout. [milliseconds]
+ *
+ */
+#define OBD_ANGLE_TO_DEGREES_SCALAR ( 0.1 )
+
+
 // ****************************************************************************
 // Function:    publish_reports
 //
